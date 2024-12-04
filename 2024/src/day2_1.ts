@@ -1,14 +1,16 @@
 const input = ``;
 
 const safeChecks: boolean[] = input.split(`\n`).map(r => {
+    const parsedArray = r.split(' ').map(i => parseInt(i, 10));
+
     if (
-        r !== r.split(' ').map(i => parseInt(i, 10)).sort((a, b) => a - b).join(' ')
-        && r !== r.split(' ').map(i => parseInt(i, 10)).sort((a, b) => a - b).reverse().join(' ')
+        r !== parsedArray.sort((a, b) => a - b).join(' ')
+        && r !== parsedArray.sort((a, b) => a - b).reverse().join(' ')
     ) {
         return false;
     }
 
-    return r.split(' ').map(i => parseInt(i, 10)).reduce((p, c, ix, arr) => {
+    return parsedArray.reduce((p, c, ix, arr) => {
         if (
             !p
             || ix === arr.length - 1
