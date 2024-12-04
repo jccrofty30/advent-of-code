@@ -4,6 +4,3 @@
 */dist/
 *.js
 
-# Input Files
-*/inputs/
-*-input.txt
