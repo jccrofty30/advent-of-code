@@ -1,1 +1,9 @@
 .idea/*
+
+# Compiled Files
+*/dist/
+*.js
+
+# Input Files
+*/inputs/
+*-input.txt
