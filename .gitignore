@@ -3,4 +3,5 @@
 # Compiled Files
 */dist/
 *.js
-
+*/obj/
+*/bin/*
