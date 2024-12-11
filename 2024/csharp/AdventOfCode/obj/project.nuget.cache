@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FT9bEYnU1eU=",
+  "dgSpecHash": "3fGthR4kz/8=",
   "success": true,
-  "projectFilePath": "/home/jcroft/Git/advent-of-code/2024/csharp/Day1_1/Day1_1/AdventOfCode/AdventOfCode.csproj",
+  "projectFilePath": "/home/jcroft/Git/advent-of-code/2024/csharp/AdventOfCode/AdventOfCode.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

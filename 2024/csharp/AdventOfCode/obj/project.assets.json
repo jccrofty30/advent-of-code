@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/jcroft/Git/advent-of-code/2024/csharp/Day1_1/Day1_1/AdventOfCode/AdventOfCode.csproj",
+      "projectUniqueName": "/home/jcroft/Git/advent-of-code/2024/csharp/AdventOfCode/AdventOfCode.csproj",
       "projectName": "AdventOfCode",
-      "projectPath": "/home/jcroft/Git/advent-of-code/2024/csharp/Day1_1/Day1_1/AdventOfCode/AdventOfCode.csproj",
+      "projectPath": "/home/jcroft/Git/advent-of-code/2024/csharp/AdventOfCode/AdventOfCode.csproj",
       "packagesPath": "/home/jcroft/.nuget/packages/",
-      "outputPath": "/home/jcroft/Git/advent-of-code/2024/csharp/Day1_1/Day1_1/AdventOfCode/obj/",
+      "outputPath": "/home/jcroft/Git/advent-of-code/2024/csharp/AdventOfCode/obj/",
       "projectStyle": "PackageReference",
       "UsingMicrosoftNETSdk": false,
       "configFilePaths": [
