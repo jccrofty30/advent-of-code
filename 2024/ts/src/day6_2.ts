@@ -69,27 +69,42 @@ class MapCrawler {
     private _currentColumn: number;
     private _currentLine: number;
     private _heading: Heading;
+    private _loops: [number, number][] = []
     private _mapString: string;
-    private _obstacles: [number, number][] = [];
+    private _origin: [number, number];
     private _parsedMap: Array<string[]>;
-    private _spacesVisited: string[] = [];
+    private _recursive: boolean = true;
+    private _revisitLimit: number = 10;
+    private _spacesVisited: { [key: string]: number; } = {};
 
-    public constructor(init: string) {
-        this._mapString = init;
-        this._parsedMap = init.split(`\n`).map((line, ix) => {
-            if (line.indexOf('^') > -1) {
+    public constructor(map: string, init?: { column: number, heading: Heading, line: number, recursive?: boolean; revisitLimit?: number; }) {
+        this._mapString = map;
+        this._parsedMap = map.split(`\n`).map((line, ix) => {
+            if (init === undefined && line.indexOf('^') > -1) {
                 this._currentLine = ix;
                 this._currentColumn = line.indexOf('^');
-                this._spacesVisited.push(this.currentPosition.join(','));
+                this._origin = this.currentPosition;
+                this._spacesVisited[this.currentPosition.join(',')] = 1;
             }
 
             return line.split('')
         });
 
-        this._heading = new Heading(0, -1);
+        if (init === undefined) {
+            this._heading = new Heading(0, -1);
+            return;
+        }
+
+        this._currentColumn = init.column;
+        this._currentLine = init.line;
+        this._heading = init.heading;
+        this._origin = this.currentPosition;
+        this._recursive = init.recursive === undefined ? this._recursive : init.recursive;
+        this._revisitLimit = init.revisitLimit === undefined ? this._revisitLimit : init.revisitLimit;
+        this._spacesVisited[this.currentPosition.join(',')] = 1;
     }
 
-    get currentPosition() {
+    get currentPosition(): [number, number] {
         return [this._currentLine, this._currentColumn];
     }
 
@@ -101,30 +116,54 @@ class MapCrawler {
         return this._parsedMap[checkLine][checkCol] !== '#';
     }
 
+    get loops() {
+        return this._loops;
+    }
+
     public move() {
         if (this.isSpaceOpen(this._currentLine + this._heading.lineHeading, this._currentColumn + this._heading.columnHeading)) {
-            if (this._spacesVisited.indexOf(this.currentPosition.join(',')) === -1) {
-                this._spacesVisited.push(this.currentPosition.join(','));
+            if (Object.keys(this._spacesVisited).indexOf(this.currentPosition.join(',')) === -1) {
+                this._spacesVisited[this.currentPosition.join(',')] = 1;
+            }
+            else {
+                this._spacesVisited[this.currentPosition.join(',')]++;
             }
 
             this._currentColumn += this._heading.columnHeading;
             this._currentLine += this._heading.lineHeading;
             return;
         }
-        else {
-            this._obstacles.push([this._currentLine + this._heading.lineHeading, this._currentColumn + this._heading.columnHeading]);
-        }
 
         this._heading.turn90();
+
+        if (this._recursive) {
+            this.testForLoop();
+        }
+        
         this.move();
     }
 
-    get obstacles() {
-        return this._obstacles;
+    get revisitLimitReached() {
+        return Object.values(this._spacesVisited).some(c => c > this._revisitLimit);
     }
 
     get spacesVisited() {
         return this._spacesVisited;
+    }
+
+    public testForLoop() {
+        this._heading.turn180();
+        this.move();
+        this._heading.turn180();
+        
+        const crawler = new MapCrawler(this._mapString, { column: this._currentColumn, heading: this._heading, line: this._currentLine, recursive: false });
+        while (crawler.guardInArea && !crawler.revisitLimitReached) {
+            crawler.move();
+        }
+
+        if (crawler.loops.length > 0) {
+            this._loops.push([this._currentLine, this._currentColumn]);
+        }
     }
 }
 
@@ -136,9 +175,9 @@ enum Direction {
 }
 
 const crawler = new MapCrawler(input);
-while (crawler.guardInArea) {
+while (crawler.guardInArea && !crawler.revisitLimitReached) {
     crawler.move();
 }
 
-console.log(crawler.obstacles);
-console.log(crawler.spacesVisited.length);
+console.log('Spaces Visited:', Object.values(crawler.spacesVisited).reduce((p, c) => p + c, 0));
+console.log('Loops Found:', crawler.loops.length);
